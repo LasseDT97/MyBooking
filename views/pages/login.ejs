@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body class="container">
+    <header>
+        <%- include('../partials/header') %>
+    </header>
+
+    <% 
+    let usernameText, endpoint;
+    if (adminLogin) {
+        usernameText = 'Brugernavn';
+        endpoint = '/api/auth/admin';
+    } else {
+        usernameText = 'E-mail eller Telefonnummer';
+        endpoint = '/api/auth/customer';
+    }
+    %>
+    
+    <main>
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Log Ind</h5>
+            </div>
+            <div class="card-body">
+              <form id="login-form">
+                <ul class="list-group d-none mb-3" role="alertBox">
+                </ul>
+                <div class="form-group">
+                    <label for="username"><%= usernameText %></label>
+                    <input type="text" class="form-control" name="username" placeholder="<%= usernameText %>">
+                </div>
+                <div class="form-group">
+                    <label for="password">Adgangskode</label>
+                    <input type="password" class="form-control" name="password" placeholder="Adgangskode">
+                </div>
+                <div class="form-row">
+                    <button type="submit" class="btn btn-primary mx-auto">Log Ind</button>
+                </div>
+              </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <%- include('../partials/footer') %>
+    </footer>
+
+    <%- include('../partials/javascript') %>
+    <script>
+        $('#login-form').submit(function(e) {
+            e.preventDefault();
+
+            let alertBox = $('#login-form ul[role="alertBox"]');
+
+            alertBox.addClass("d-none").empty();
+
+            // Send data to login endpoint
+            $.post('<%= endpoint %>', $('#login-form').serialize())
+            .done(data => {
+                // Login success
+                if(data.status == 'ok') {
+                    window.location = '/dashboard';
+                }
+            })
+            .fail(res => {
+                // Login failed
+                alertBox.removeClass("d-none");
+
+                res.responseJSON.errors.forEach(error => {
+                    alertBox.append(`<li class="list-group-item list-group-item-danger">${error}</li>`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

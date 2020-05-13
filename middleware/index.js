@@ -1,0 +1,7 @@
+'use strict';
+
+const AuthMiddleware = require('./auth');
+
+module.exports = {
+    AuthMiddleware
+};

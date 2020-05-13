@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body class="container">
+    <header>
+        <%- include('../partials/header') %>
+    </header>
+    <main>
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Indstillinger</h5>
+            </div>
+            <div class="card-body">
+                <form id="settings-form">
+                    <ul class="list-group d-none mb-3" role="alertBox">
+                    </ul>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="firstName">Fornavn</label>
+                            <input type="text" name="firstName" class="form-control" value="<%= auth.user.firstName %>" placeholder="<%= auth.user.firstName %>">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="lastName">Efternavn</label>
+                            <input type="text" name="lastName" class="form-control" value="<%= auth.user.lastName %>" placeholder="<%= auth.user.lastName %>">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="email">E-mail</label>
+                            <input type="email" name="email" class="form-control" value="<%= auth.user.email %>" placeholder="<%= auth.user.email %>">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="phone">Telefonnummer</label>
+                            <input type="number" name="phone" class="form-control" value="<%= auth.user.phone %>" placeholder="<%= auth.user.phone %>">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Adgangskode</label>
+                        <input type="password" name="password" class="form-control" placeholder="Adgangskode">
+                    </div>
+                    <div class="form-row">
+                        <button type="submit" class="btn btn-primary mx-auto">Gem</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <%- include('../partials/footer') %>
+    </footer>
+
+    <%- include('../partials/javascript') %>
+    <script>
+        $('#settings-form').submit(function(e) {
+            e.preventDefault();
+
+            let alertBox = $('#settings-form ul[role="alertBox"]');
+
+            alertBox.addClass("d-none").empty();
+
+            
+            $.ajax({
+                url: '/api/customers',
+                type: 'PUT',
+                data: $('#settings-form').serialize(),
+                contentType: 'application/x-www-form-urlencoded',
+                success: (data) => {
+                    if(data.status == 'ok') {
+                        window.location = '/settings';
+                    }
+                },
+                error: (res) => {
+                    res.responseJSON.errors.forEach(error => {
+                        alertBox.append(`<li class="list-group-item list-group-item-danger">${error}</li>`);
+                    });
+
+                    alertBox.removeClass("d-none");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

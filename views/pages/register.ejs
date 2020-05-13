@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body class="container">
+    <header>
+        <%- include('../partials/header') %>
+    </header>
+
+    <main>
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Opret Bruger</h5>
+            </div>
+            <div class="card-body">
+                <form id="register-form">
+                    <ul class="list-group d-none mb-3" role="alertBox">
+                    </ul>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="firstName">Fornavn</label>
+                            <input type="text" name="firstName" class="form-control" placeholder="Fornavn">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="lastName">Efternavn</label>
+                            <input type="text" name="lastName" class="form-control"placeholder="Efternavn">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="email">E-mail</label>
+                            <input type="email" name="email" class="form-control" placeholder="E-mail">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="phone">Telefonnummer</label>
+                            <input type="number" name="phone" class="form-control" placeholder="Telefonnummer">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Adgangskode</label>
+                        <input type="password" name="password" class="form-control" placeholder="Adgangskode">
+                    </div>
+                    <div class="form-row">
+                        <button type="submit" class="btn btn-primary mx-auto">Opret Bruger</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <%- include('../partials/footer') %>
+    </footer>
+
+    <%- include('../partials/javascript') %>
+    <script>
+        $('#register-form').submit(function(e) {
+            e.preventDefault();
+
+            let alertBox = $('#register-form ul[role="alertBox"]');
+
+            alertBox.addClass("d-none").empty();
+
+            // Send data to register endpoint
+            $.post('/api/customers', $('#register-form').serialize())
+            .done(data => {
+                if(data.status == 'ok') {
+                    window.location = '/dashboard';
+                }
+            })
+            .fail(res => {
+                alertBox.removeClass("d-none");
+
+                res.responseJSON.errors.forEach(error => {
+                    alertBox.append(`<li class="list-group-item list-group-item-danger">${error}</li>`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
