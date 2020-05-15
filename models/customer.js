@@ -2,7 +2,6 @@
 
 const { model, Schema } = require('mongoose');
 
-
 module.exports = model('Customer', new Schema({
     // Customer's first name
     firstName: String,
