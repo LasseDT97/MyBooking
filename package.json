@@ -16,7 +16,7 @@
     "ejs": "^3.1.2",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "moment": "^2.25.1",
+    "moment": "^2.29.4",
     "mongodb-cli": "^1.0.0",
     "mongoose": "^5.9.11"
   },
